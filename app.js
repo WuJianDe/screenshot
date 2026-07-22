@@ -171,11 +171,17 @@ function getCroppedCanvas() {
   return output;
 }
 
+function getTimestamp() {
+  const now = new Date();
+  const pad = (value) => String(value).padStart(2, '0');
+  return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+}
+
 document.querySelector('#downloadButton').addEventListener('click', () => {
   const output = getCroppedCanvas();
   const link = document.createElement('a');
   const extension = formatSelect.value.split('/')[1].replace('jpeg', 'jpg');
-  link.download = `screenshot-${cropLabel.textContent.replace(':', 'x')}.${extension}`;
+  link.download = `screenshot-${getTimestamp()}.${extension}`;
   link.href = output.toDataURL(formatSelect.value);
   link.click();
 });
