@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>比例截圖工具</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="intro">
+        <p class="eyebrow">RATIO CAPTURE</p>
+        <h1>裁出剛好的畫面比例</h1>
+        <p class="lead">選擇螢幕後，拖曳裁切框來取得固定比例的截圖。</p>
+      </section>
+
+      <section class="controls" aria-label="擷取控制">
+        <div class="ratio-picker" role="group" aria-label="選擇截圖比例">
+          <button class="ratio-button is-active" type="button" data-ratio="16:9">16:9</button>
+          <button class="ratio-button" type="button" data-ratio="4:3">4:3</button>
+          <button class="ratio-button" type="button" data-ratio="1:1">1:1</button>
+          <button class="ratio-button" type="button" data-ratio="9:16">9:16</button>
+          <button id="customRatioButton" class="ratio-button" type="button" data-ratio="custom">自由</button>
+        </div>
+        <button id="captureButton" class="primary-button" type="button">開始擷取螢幕</button>
+      </section>
+
+      <section id="workspace" class="workspace is-empty" aria-live="polite">
+        <div id="emptyState" class="empty-state">
+          <span class="empty-icon">⌗</span>
+          <h2>尚未選擇畫面</h2>
+          <p>按下「開始擷取螢幕」，並在瀏覽器視窗中選擇要擷取的內容。</p>
+        </div>
+
+        <div id="editor" class="editor" hidden>
+          <div id="canvasWrap" class="canvas-wrap">
+            <canvas id="sourceCanvas" aria-label="螢幕畫面預覽"></canvas>
+            <div id="cropBox" class="crop-box" aria-label="固定比例裁切範圍">
+              <span class="crop-label" id="cropLabel">16:9</span>
+              <span class="handle handle-nw" data-handle="nw"></span>
+              <span class="handle handle-ne" data-handle="ne"></span>
+              <span class="handle handle-sw" data-handle="sw"></span>
+              <span class="handle handle-se" data-handle="se"></span>
+            </div>
+          </div>
+          <div class="editor-footer">
+            <p id="sizeInfo">—</p>
+            <div class="export-options" aria-label="輸出設定">
+              <label>格式
+                <select id="formatSelect">
+                  <option value="image/png">PNG</option>
+                  <option value="image/jpeg">JPEG</option>
+                  <option value="image/webp">WebP</option>
+                </select>
+              </label>
+            </div>
+            <div class="actions">
+              <button id="restartButton" class="secondary-button" type="button">重新選擇畫面</button>
+              <button id="copyButton" class="secondary-button" type="button">複製選取範圍</button>
+              <button id="downloadButton" class="primary-button" type="button">下載圖片</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <dialog id="ratioDialog" class="ratio-dialog">
+      <form id="customRatioForm" method="dialog">
+        <h2>自訂裁切比例</h2>
+        <p>輸入寬與高，例如 3 × 2。</p>
+        <div class="ratio-inputs">
+          <label>寬 <input id="ratioWidth" type="number" min="1" max="999" value="16" required /></label>
+          <span>:</span>
+          <label>高 <input id="ratioHeight" type="number" min="1" max="999" value="9" required /></label>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-button" type="button" id="cancelRatioButton">取消</button>
+          <button class="primary-button" type="submit">套用比例</button>
+        </div>
+      </form>
+    </dialog>
+    <script src="app.js"></script>
+  </body>
+</html>

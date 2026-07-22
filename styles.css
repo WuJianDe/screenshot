@@ -1,0 +1,33 @@
+:root { color-scheme: dark; font-family: Inter, "Noto Sans TC", system-ui, sans-serif; background: #101219; color: #f5f6f8; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: radial-gradient(circle at top right, #28395a, transparent 37rem), #101219; }
+button { font: inherit; cursor: pointer; }
+.app-shell { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 74px 0 48px; }
+.intro { max-width: 660px; }
+.eyebrow { color: #a8c7ff; font-size: .75rem; letter-spacing: .16em; font-weight: 750; margin: 0 0 14px; }
+h1 { font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.1; letter-spacing: -.055em; margin: 0; }
+.lead { color: #afb8c9; font-size: 1.05rem; line-height: 1.7; margin: 18px 0 32px; }
+.controls, .editor-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.ratio-picker { display: flex; gap: 7px; padding: 5px; background: #202530; border: 1px solid #333b4c; border-radius: 12px; }
+.ratio-button, .secondary-button { color: #c6cfdf; border: 0; background: transparent; border-radius: 8px; padding: 9px 13px; }
+.ratio-button:hover, .secondary-button:hover { background: #313a4b; color: white; }
+.ratio-button.is-active { background: #eef4ff; color: #172033; font-weight: 750; }
+.primary-button { border: 0; border-radius: 10px; padding: 12px 17px; color: #071222; background: #9cc5ff; font-weight: 750; box-shadow: 0 8px 25px #0004; }
+.primary-button:hover { background: #c4dcff; }
+.workspace { margin-top: 34px; border: 1px solid #333b4c; border-radius: 20px; overflow: hidden; background: #171b24; }
+.workspace.is-empty { min-height: 430px; display: grid; place-items: center; }
+.empty-state { max-width: 390px; text-align: center; padding: 32px; color: #aab4c4; }
+.empty-state h2 { color: white; font-size: 1.15rem; margin: 14px 0 8px; }
+.empty-state p { margin: 0; line-height: 1.65; }
+.empty-icon { display: inline-grid; place-items: center; width: 50px; height: 50px; border: 1px solid #52617a; border-radius: 50%; font-size: 2rem; color: #9cc5ff; }
+.editor { padding: 18px; }
+.canvas-wrap { position: relative; width: 100%; max-height: 66vh; overflow: hidden; background: #080a0f; border-radius: 12px; touch-action: none; user-select: none; }
+canvas { display: block; width: 100%; height: auto; max-height: 66vh; object-fit: contain; }
+.crop-box { position: absolute; border: 2px solid #b9d8ff; box-shadow: 0 0 0 9999px rgb(0 0 0 / .52); cursor: move; }
+.crop-label { position: absolute; top: -30px; left: -2px; color: #081222; background: #b9d8ff; border-radius: 5px 5px 5px 0; padding: 4px 8px; font-size: .72rem; font-weight: 800; }
+.handle { position: absolute; width: 14px; height: 14px; background: white; border: 2px solid #377fcf; border-radius: 50%; }
+.handle-nw { top: -8px; left: -8px; cursor: nwse-resize; }.handle-se { bottom: -8px; right: -8px; cursor: nwse-resize; }.handle-ne { top: -8px; right: -8px; cursor: nesw-resize; }.handle-sw { bottom: -8px; left: -8px; cursor: nesw-resize; }
+.editor-footer { padding: 17px 4px 0; color: #aab4c4; font-size: .9rem; }.editor-footer p { margin: 0; }.actions { display: flex; gap: 8px; }
+.export-options { display: flex; width: 100%; padding: 13px; background: #202530; border: 1px solid #333b4c; border-radius: 10px; }.export-options label { display: grid; gap: 5px; color: #b9c5d8; font-size: .75rem; }.export-options select { min-height: 34px; padding: 6px 8px; color: #f5f6f8; background: #141923; border: 1px solid #4a5870; border-radius: 7px; font: inherit; }
+.ratio-dialog { width: min(400px, calc(100% - 32px)); padding: 0; color: #f5f6f8; background: #1b202b; border: 1px solid #455168; border-radius: 16px; box-shadow: 0 24px 80px #0009; }.ratio-dialog::backdrop { background: rgb(0 0 0 / .65); }.ratio-dialog form { padding: 25px; }.ratio-dialog h2 { margin: 0; font-size: 1.25rem; }.ratio-dialog p { color: #aab4c4; margin: 9px 0 22px; }.ratio-inputs { display: flex; align-items: end; gap: 10px; }.ratio-inputs label { display: grid; flex: 1; gap: 7px; color: #b9c5d8; font-size: .82rem; }.ratio-inputs input { width: 100%; padding: 10px; color: white; background: #10141c; border: 1px solid #4a5870; border-radius: 8px; font: inherit; }.ratio-inputs span { padding-bottom: 9px; color: #a8c7ff; font-size: 1.3rem; }.dialog-actions { display: flex; justify-content: end; gap: 8px; margin-top: 24px; }
+@media (max-width: 600px) { .app-shell { width: min(100% - 24px, 1120px); padding-top: 40px; }.controls { align-items: stretch; }.ratio-picker { overflow-x: auto; }.primary-button { width: 100%; }.actions { width: 100%; }.actions button { flex: 1; }.editor { padding: 10px; }.editor-footer { gap: 12px; } }
