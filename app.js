@@ -13,6 +13,8 @@ const customRatioForm = document.querySelector('#customRatioForm');
 const ratioWidthInput = document.querySelector('#ratioWidth');
 const ratioHeightInput = document.querySelector('#ratioHeight');
 const formatSelect = document.querySelector('#formatSelect');
+const qualityInput = document.querySelector('#qualityInput');
+const qualityLabel = document.querySelector('#qualityLabel');
 let selectedRatio = '16:9';
 let customRatioValue = 16 / 9;
 let stream;
@@ -20,7 +22,22 @@ let crop = { x: 0, y: 0, width: 0, height: 0 };
 let pointerAction;
 
 function getActiveRatio() {
+  if (selectedRatio === 'free') return undefined;
   return selectedRatio === 'custom' ? customRatioValue : ratioMap[selectedRatio];
+}
+
+function getRatioLabel() {
+  if (selectedRatio === 'free') return '不限';
+  return selectedRatio === 'custom' ? `${ratioWidthInput.value}:${ratioHeightInput.value}` : selectedRatio;
+}
+
+// 依可用寬度與 66vh 計算顯示尺寸，讓畫布與原圖比例一致（不留黑邊），座標換算才會正確。
+function fitCanvas() {
+  const padding = parseFloat(getComputedStyle(editor).paddingLeft) * 2;
+  const available = editor.clientWidth - padding;
+  const fit = Math.min(available / canvas.width, (window.innerHeight * 0.66) / canvas.height, 1);
+  canvas.style.width = `${Math.floor(canvas.width * fit)}px`;
+  canvas.style.height = `${Math.floor(canvas.height * fit)}px`;
 }
 
 function applyCrop() {
@@ -42,7 +59,7 @@ function resetCrop() {
   let height = width / ratio;
   if (height > maxHeight) { height = maxHeight; width = height * ratio; }
   crop = { x: (canvas.clientWidth - width) / 2, y: (canvas.clientHeight - height) / 2, width, height };
-  cropLabel.textContent = selectedRatio === 'custom' ? `${ratioWidthInput.value}:${ratioHeightInput.value}` : selectedRatio;
+  cropLabel.textContent = getRatioLabel();
   applyCrop();
 }
 
@@ -75,12 +92,12 @@ async function captureScreen() {
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     video.pause();
-    stream.getVideoTracks()[0].addEventListener('ended', stopStream, { once: true });
     stopStream();
     workspace.classList.remove('is-empty');
     emptyState.hidden = true;
     editor.hidden = false;
-    requestAnimationFrame(resetCrop);
+    fitCanvas();
+    resetCrop();
   } catch (error) {
     if (error.name !== 'NotAllowedError') alert('無法取得螢幕畫面，請再試一次。');
   }
@@ -177,12 +194,21 @@ function getTimestamp() {
   return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
 }
 
+function syncQualityState() {
+  const lossy = formatSelect.value !== 'image/png';
+  qualityInput.disabled = !lossy;
+  qualityLabel.textContent = lossy ? `${Math.round(qualityInput.value * 100)}%` : '無損';
+}
+formatSelect.addEventListener('change', syncQualityState);
+qualityInput.addEventListener('input', syncQualityState);
+syncQualityState();
+
 document.querySelector('#downloadButton').addEventListener('click', () => {
   const output = getCroppedCanvas();
   const link = document.createElement('a');
   const extension = formatSelect.value.split('/')[1].replace('jpeg', 'jpg');
   link.download = `screenshot-${getTimestamp()}.${extension}`;
-  link.href = output.toDataURL(formatSelect.value);
+  link.href = output.toDataURL(formatSelect.value, Number(qualityInput.value));
   link.click();
 });
 document.querySelector('#copyButton').addEventListener('click', async (event) => {
@@ -197,4 +223,13 @@ document.querySelector('#copyButton').addEventListener('click', async (event) =>
     alert('無法複製圖片。請改用 Chrome 或 Edge，並以 localhost 或 HTTPS 開啟本工具。');
   }
 });
-window.addEventListener('resize', () => { if (!editor.hidden) resetCrop(); });
+window.addEventListener('resize', () => {
+  if (editor.hidden) return;
+  const previousWidth = canvas.clientWidth;
+  const previousHeight = canvas.clientHeight;
+  fitCanvas();
+  const scaleX = canvas.clientWidth / previousWidth;
+  const scaleY = canvas.clientHeight / previousHeight;
+  crop = { x: crop.x * scaleX, y: crop.y * scaleY, width: crop.width * scaleX, height: crop.height * scaleY };
+  applyCrop();
+});

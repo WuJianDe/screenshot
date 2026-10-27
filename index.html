@@ -20,7 +20,8 @@
           <button class="ratio-button" type="button" data-ratio="4:3">4:3</button>
           <button class="ratio-button" type="button" data-ratio="1:1">1:1</button>
           <button class="ratio-button" type="button" data-ratio="9:16">9:16</button>
-          <button id="customRatioButton" class="ratio-button" type="button" data-ratio="custom">自由</button>
+          <button class="ratio-button" type="button" data-ratio="free">不限</button>
+          <button id="customRatioButton" class="ratio-button" type="button" data-ratio="custom">自訂</button>
         </div>
         <button id="captureButton" class="primary-button" type="button">開始擷取螢幕</button>
       </section>
@@ -35,7 +36,7 @@
         <div id="editor" class="editor" hidden>
           <div id="canvasWrap" class="canvas-wrap">
             <canvas id="sourceCanvas" aria-label="螢幕畫面預覽"></canvas>
-            <div id="cropBox" class="crop-box" aria-label="固定比例裁切範圍">
+            <div id="cropBox" class="crop-box" aria-label="裁切範圍">
               <span class="crop-label" id="cropLabel">16:9</span>
               <span class="handle handle-nw" data-handle="nw"></span>
               <span class="handle handle-ne" data-handle="ne"></span>
@@ -52,6 +53,9 @@
                   <option value="image/jpeg">JPEG</option>
                   <option value="image/webp">WebP</option>
                 </select>
+              </label>
+              <label>畫質 <output id="qualityLabel">無損</output>
+                <input id="qualityInput" type="range" min="0.5" max="1" step="0.01" value="0.92" />
               </label>
             </div>
             <div class="actions">
