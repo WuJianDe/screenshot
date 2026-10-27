@@ -1,0 +1,45 @@
+name: Deploy to Cloudways
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  REMOTE_DIR: /home/master/applications/nnbcjxmqpm/public_html/screenshot/
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload static files
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+        run: |
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT" \
+            --rsync-path="mkdir -p $REMOTE_DIR && rsync" \
+            index.html app.js styles.css \
+            "$SSH_USER@$SSH_HOST:$REMOTE_DIR"
+
+      - name: Check site is up
+        run: curl -fsS -o /dev/null https://demo.adevic.dev/screenshot/
